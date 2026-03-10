@@ -158,13 +158,13 @@ def get_category(
 
 
 def quick_hash(path: Path, chunk: int = 8192) -> str:
-    """Fast fingerprint: (file-size encoded + first 8 KiB) → SHA-1 prefix."""
+    """Fast fingerprint: (file-size encoded + first 8 KiB) → BLAKE2b digest."""
     try:
         st = path.stat()
         with path.open("rb") as fh:
             head = fh.read(chunk)
         raw = f"{st.st_size}:".encode() + head
-        return hashlib.sha1(raw).hexdigest()[:20]  # nosec B324 (not cryptographic)
+        return hashlib.blake2b(raw, digest_size=20).hexdigest()
     except OSError:
         return f"err_{id(path)}"
 
@@ -546,14 +546,15 @@ def cli_main(argv: Optional[List[str]] = None) -> int:
 class OrganizerApp:
     """Full Tkinter GUI for the God-Tier File Organizer."""
 
-    def __init__(self) -> None:
+    def __init__(self, initial_path: Optional[str] = None) -> None:
         self.root_win = tk.Tk()
         self.root_win.title("God-Tier File Organizer v4")
         self.root_win.geometry("820x680")
         self.root_win.resizable(True, True)
 
         # State variables
-        self.target_path = tk.StringVar(value=str(Path.home()))
+        start_dir = initial_path or str(Path.home())
+        self.target_path = tk.StringVar(value=start_dir)
         self.mode_var = tk.StringVar(value="flat")
         self.by_date_var = tk.StringVar(value="none")
         self.dup_action_var = tk.StringVar(value="move_to_duplicates")
@@ -832,12 +833,8 @@ def main() -> None:
     nautilus_path = _detect_nautilus_path()
 
     if not force_cli and _TK:
-        # GUI mode
-        if nautilus_path:
-            os.chdir(nautilus_path)
-        app = OrganizerApp()
-        if nautilus_path:
-            app.target_path.set(nautilus_path)
+        # GUI mode — pass nautilus_path to constructor so it is set before mainloop()
+        OrganizerApp(initial_path=nautilus_path)
     else:
         # CLI mode — strip the --cli flag before parsing
         argv = [a for a in sys.argv[1:] if a != "--cli"]
