@@ -118,6 +118,7 @@ JUNK_FILES = frozenset({
 
 UNDO_DIR_NAME = "ORGANIZE_UNDO_LOGS"
 PLAN_FILENAME = "organize_plan.json"
+DUPLICATES_DIR_NAME = "Duplicates"
 
 
 # ─── Core helpers ─────────────────────────────────────────────────────────────
@@ -191,7 +192,7 @@ def should_skip(path: Path, include_hidden: bool, script_name: str) -> bool:
         return True
     if path.name in JUNK_FILES:
         return True
-    if not include_hidden and path.name.startswith("."):
+    if not include_hidden and any(part.startswith(".") for part in path.parts):
         return True
     return False
 
@@ -211,12 +212,8 @@ def collect_files(
 
         rel = p.relative_to(root)
 
-        # Hidden components (e.g. .git/config) are skipped unless explicitly allowed
-        if not include_hidden and any(part.startswith(".") for part in rel.parts):
-            continue
-
         # Always ignore our own artifacts
-        if "Duplicates" in rel.parts:
+        if DUPLICATES_DIR_NAME in rel.parts:
             continue
         if rel.name == PLAN_FILENAME:
             continue
