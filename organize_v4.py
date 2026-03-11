@@ -206,14 +206,30 @@ def collect_files(
     iterator: Iterator[Path] = root.iterdir() if mode == "none" else root.rglob("*")
     result = []
     for p in iterator:
-        if p.is_file() and not should_skip(p, include_hidden, script_name):
-            # Skip files already inside our undo-log or plan dirs
-            try:
-                p.relative_to(root / UNDO_DIR_NAME)
-                continue
-            except ValueError:
-                pass
-            result.append(p)
+        if not p.is_file():
+            continue
+
+        rel = p.relative_to(root)
+
+        # Hidden components (e.g. .git/config) are skipped unless explicitly allowed
+        if not include_hidden and any(part.startswith(".") for part in rel.parts):
+            continue
+
+        # Always ignore our own artifacts
+        if "Duplicates" in rel.parts:
+            continue
+        if rel.name == PLAN_FILENAME:
+            continue
+        try:
+            p.relative_to(root / UNDO_DIR_NAME)
+            continue
+        except ValueError:
+            pass
+
+        if should_skip(p, include_hidden, script_name):
+            continue
+
+        result.append(p)
     return result
 
 
