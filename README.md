@@ -1,11 +1,23 @@
-# SMART-FILE — God-Tier File Organizer v4
+# SMART-FILE — AI-Enhanced File Organizer
 
-Drop a single Python file into any folder, run it, and watch it organize
-everything automatically by file type, date, or size.
+Drop a single Python file into any folder, run it, and watch it organise
+everything — by file type, content, or date.
+
+Two scripts are included:
+
+| Script | Purpose |
+|--------|---------|
+| `organize_v4.py` | Original God-Tier organiser — pure extension-based, zero deps |
+| `smart_organizer.py` | **AI-Enhanced** organiser — adds cognitive modes, content analysis, OCR, tagging |
+
+Both share the same core logic. `smart_organizer.py` is a strict superset of
+`organize_v4.py` — every `organize_v4` flag works identically.
 
 ---
 
 ## Features
+
+### Core (both scripts)
 
 | Feature | Details |
 |---------|---------|
@@ -23,24 +35,99 @@ everything automatically by file type, date, or size.
 | **File manager integration** | One-command install for Windows Explorer, Linux Nautilus/Nemo/Thunar, macOS Automator |
 | **Zero hard dependencies** | Pure stdlib; `tqdm` and `rich` are optional (auto-detected) |
 
+### AI-Enhanced (`smart_organizer.py` only)
+
+| Feature | Details |
+|---------|---------|
+| **Cognitive modes** | `extension` (default) · `content` · `adaptive` — control how files are categorised |
+| **Content analysis** | Magic-byte signatures identify file type regardless of extension |
+| **MIME detection** | `python-magic` (optional) adds MIME-type analysis as a second signal |
+| **Text keyword extraction** | Scans readable files to sub-categorise documents into Invoices, Contracts, Resumes, Reports, Research, Legal, Financial |
+| **OCR support** | `pytesseract + Pillow` (optional) extracts text from scanned images to guide categorisation |
+| **Multi-sector confidence scoring** | Adaptive weighting fuses signals from all active sectors (inspired by victor_llm tensor ops) |
+| **File tagging** | Writes `organize_tags.json` with AI-derived tags for each file (`--tag-files`) |
+| **Enhanced GUI** | Dedicated *🤖 AI / Cognitive* tab with mode selection, OCR toggle, and sub-categorisation options |
+
 ---
 
 ## Quick Start
 
-### GUI (default)
+### AI-Enhanced organiser (`smart_organizer.py`)
+
+#### GUI
+
+```bash
+python smart_organizer.py
+```
+
+A window opens with two tabs:
+1. **📁 Organisation** — recursion mode, date grouping, duplicate handling, large-file threshold
+2. **🤖 AI / Cognitive** — select cognitive mode, enable OCR, sub-categorise documents, save tags
+
+Steps:
+1. Choose a folder with **Browse…**
+2. Select a **Cognitive mode** (Adaptive is recommended)
+3. Click **🔍 Preview Plan** — review all planned moves in the output pane
+4. Click **▶ Run Now** — files are moved, undo log saved automatically
+5. Made a mistake? Click **↩ Undo Last Run**
+
+#### CLI
+
+```bash
+# Preview everything (no files moved)
+python smart_organizer.py --cli --dry-run -v
+
+# Organise using AI content analysis (ignores extension if content differs)
+python smart_organizer.py --cli --cognitive content
+
+# Fully adaptive: fuses extension + content with confidence scoring
+python smart_organizer.py --cli --cognitive adaptive
+
+# Sub-categorise documents into Invoices, Contracts, Resumes, etc.
+python smart_organizer.py --cli --cognitive content --sub-categorize
+
+# Enable OCR for scanned images (needs pytesseract + Pillow)
+python smart_organizer.py --cli --cognitive adaptive --ocr
+
+# Save AI-derived tags to organize_tags.json
+python smart_organizer.py --cli --cognitive adaptive --tag-files
+
+# All organize_v4 flags still work:
+python smart_organizer.py --cli -m mirror --by-date year-month
+python smart_organizer.py --cli --undo
+python smart_organizer.py --cli --save-plan my_plan.json
+```
+
+#### Additional CLI flags (AI-specific)
+
+```
+--cognitive MODE    Categorisation strategy:
+                      extension  — extension-based only (default, zero overhead)
+                      content    — magic-byte + MIME analysis
+                      adaptive   — multi-sector confidence fusion (recommended)
+--ocr               Enable OCR for image files (requires pytesseract + Pillow)
+--sub-categorize    Organise documents into sub-folders (Invoices, Contracts, …)
+--tag-files         Write organize_tags.json with AI-derived tags for each file
+```
+
+---
+
+### Classic organiser (`organize_v4.py`)
+
+#### GUI (default)
 
 ```bash
 python organize_v4.py
 ```
 
-A window opens.  
-1. Choose a folder with **Browse…**  
-2. Pick options (mode, date grouping, duplicate handling, …)  
-3. Click **🔍 Preview Plan** — review moves in the output pane  
-4. Click **▶ Run Now** — files are moved, undo log saved automatically  
+A window opens.
+1. Choose a folder with **Browse…**
+2. Pick options (mode, date grouping, duplicate handling, …)
+3. Click **🔍 Preview Plan** — review moves in the output pane
+4. Click **▶ Run Now** — files are moved, undo log saved automatically
 5. Made a mistake? Click **↩ Undo Last Run**
 
-### CLI
+#### CLI
 
 ```bash
 # Preview everything (no files moved)
@@ -78,9 +165,7 @@ python organize_v4.py --cli --exclude .log,.tmp
 python organize_v4.py --cli /path/to/messy/folder
 ```
 
-### All CLI flags
-
-```
+### All CLI flags (`organize_v4.py` / `smart_organizer.py` shared)
 positional:
   path                    Folder to organize (default: current directory)
 
@@ -154,14 +239,17 @@ After installation:
 ## Undo
 
 Every real run (GUI or CLI) automatically writes an undo log to
-`ORGANIZE_UNDO_LOGS/undo_log_YYYYMMDD_HHMMSS.json` inside the organized folder.
+`ORGANIZE_UNDO_LOGS/undo_log_YYYYMMDD_HHMMSS.json` inside the organised folder.
 
 ```bash
-# Restore the most recent run
-python organize_v4.py --cli --undo
+# Restore the most recent run (smart_organizer.py)
+python smart_organizer.py --cli --undo
 
 # Restore a specific log
-python organize_v4.py --cli --undo-file ORGANIZE_UNDO_LOGS/undo_log_20250310_143000.json
+python smart_organizer.py --cli --undo-file ORGANIZE_UNDO_LOGS/undo_log_20250310_143000.json
+
+# Same flags work for organize_v4.py
+python organize_v4.py --cli --undo
 ```
 
 Or click **↩ Undo Last Run** in the GUI.
@@ -170,11 +258,20 @@ Or click **↩ Undo Last Run** in the GUI.
 
 ## Optional Dependencies
 
-Install for enhanced output (both are optional — the script works without them):
+All dependencies are optional — both scripts work with zero installs.
 
 ```bash
-pip install tqdm   # progress bar during large runs
-pip install rich   # coloured tree previews in CLI
+# Output enhancements (both scripts)
+pip install tqdm        # progress bar during large runs
+pip install rich        # coloured tree previews in CLI
+
+# AI-enhanced features (smart_organizer.py only)
+pip install python-magic          # MIME-type detection via libmagic
+pip install pytesseract Pillow    # OCR for scanned images
+# Also install Tesseract-OCR binary:
+#   Ubuntu/Debian: sudo apt install tesseract-ocr
+#   macOS:         brew install tesseract
+#   Windows:       https://github.com/UB-Mannheim/tesseract/wiki
 ```
 
 ---
@@ -183,5 +280,7 @@ pip install rich   # coloured tree previews in CLI
 
 | File | Purpose |
 |------|---------|
-| `organize_v4.py` | Main organizer script (GUI + CLI) |
+| `smart_organizer.py` | **AI-Enhanced** organiser — cognitive modes, content analysis, OCR, tagging (GUI + CLI) |
+| `organize_v4.py` | Classic extension-based organiser — pure stdlib, zero overhead (GUI + CLI) |
 | `setup_integration.py` | One-time file manager integration installer |
+| `tests/test_smart_organizer.py` | Unit and integration tests for `smart_organizer.py` |
