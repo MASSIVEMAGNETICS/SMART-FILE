@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Tests for smart_organizer.py — AI-Enhanced File Organiser
+Tests for smart_organizer.py — AI-Enhanced File Organizer
 
 Run with:
     python -m pytest tests/test_smart_organizer.py -v
@@ -740,7 +740,7 @@ class TestCLIIntegration(unittest.TestCase):
         # File still in root
         self.assertTrue((self.root / "photo.jpg").exists())
 
-    def test_basic_organise(self) -> None:
+    def test_basic_organize(self) -> None:
         (self.root / "photo.jpg").write_bytes(b"img")
         (self.root / "song.mp3").write_bytes(b"audio")
         rc = self._run_cli()
@@ -790,7 +790,7 @@ class TestCLIIntegration(unittest.TestCase):
         tags_file = self.root / TAGS_FILENAME
         self.assertTrue(tags_file.exists())
 
-    def test_undo_after_organise(self) -> None:
+    def test_undo_after_organize(self) -> None:
         (self.root / "photo.jpg").write_bytes(b"img")
         self._run_cli()
         # Undo

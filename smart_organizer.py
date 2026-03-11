@@ -2,7 +2,7 @@
 """
 SMART-FILE — AI-Enhanced File Organizer
 ========================================
-Drop into any folder, run it, and watch it organise everything intelligently.
+Drop into any folder, run it, and watch it organize everything intelligently.
 
 Blends the best of:
   • MASSIVEMAGNETICS/SMART-FILE  — single-file simplicity, core organisation
@@ -647,7 +647,7 @@ def unique_dest(target_dir: Path, name: str) -> Path:
 
 
 def should_skip(path: Path, include_hidden: bool, script_name: str) -> bool:
-    """Return True if *path* should never be touched by the organiser."""
+    """Return True if *path* should never be touched by the organizer."""
     if path.is_dir():
         return True
     if path.name == script_name:
@@ -864,7 +864,7 @@ def execute_plan(
     moves_made: List[Tuple[Path, Path]] = []
 
     iterator = (
-        tqdm(plan, desc="Organising", unit="file")  # type: ignore[name-defined]
+        tqdm(plan, desc="Organizing", unit="file")  # type: ignore[name-defined]
         if _TQDM and not dry_run
         else plan
     )
@@ -928,7 +928,7 @@ def _print_summary(
 def cli_main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         prog="smart_organizer.py",
-        description="SMART-FILE AI-Enhanced File Organiser — CLI mode",
+        description="SMART-FILE AI-Enhanced File Organizer — CLI mode",
         formatter_class=argparse.RawTextHelpFormatter,
         epilog=(
             "Examples:\n"
@@ -942,7 +942,7 @@ def cli_main(argv: Optional[List[str]] = None) -> int:
         ),
     )
     parser.add_argument(
-        "path", nargs="?", default=".", help="Folder to organise (default: .)"
+        "path", nargs="?", default=".", help="Folder to organize (default: .)"
     )
     parser.add_argument("--cli", action="store_true", help="Force CLI mode (skip GUI)")
     parser.add_argument(
@@ -1015,7 +1015,7 @@ def cli_main(argv: Optional[List[str]] = None) -> int:
     )
     parser.add_argument(
         "--sub-categorize", action="store_true",
-        help="Organise documents into sub-folders (Invoices, Contracts, …)",
+        help="Organize documents into sub-folders (Invoices, Contracts, …)",
     )
     parser.add_argument(
         "--tag-files", action="store_true",
@@ -1089,7 +1089,7 @@ def cli_main(argv: Optional[List[str]] = None) -> int:
     )
 
     if not plan:
-        logging.info("No files to organise.")
+        logging.info("No files to organize.")
         return 0
 
     logging.info("Found %d file(s) to move (%d duplicate(s)).", len(plan), dup_count)
@@ -1328,7 +1328,7 @@ class SmartOrganizerApp:
         self._log_area.delete("1.0", tk.END)
 
     def _browse(self) -> None:
-        folder = filedialog.askdirectory(title="Select folder to organise")
+        folder = filedialog.askdirectory(title="Select folder to organize")
         if folder:
             self.target_path.set(folder)
 
@@ -1439,7 +1439,7 @@ class SmartOrganizerApp:
     def _run_now(self) -> None:
         if not messagebox.askyesno(
             "Confirm",
-            "Organise this folder now?\n(Files will be moved — an undo log will be saved.)",
+            "Organize this folder now?\n(Files will be moved — an undo log will be saved.)",
         ):
             return
         self._clear()

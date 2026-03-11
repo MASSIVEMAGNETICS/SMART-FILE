@@ -1,14 +1,14 @@
 # SMART-FILE — AI-Enhanced File Organizer
 
-Drop a single Python file into any folder, run it, and watch it organise
+Drop a single Python file into any folder, run it, and watch it organize
 everything — by file type, content, or date.
 
 Two scripts are included:
 
 | Script | Purpose |
 |--------|---------|
-| `organize_v4.py` | Original God-Tier organiser — pure extension-based, zero deps |
-| `smart_organizer.py` | **AI-Enhanced** organiser — adds cognitive modes, content analysis, OCR, tagging |
+| `organize_v4.py` | Original God-Tier organizer — pure extension-based, zero deps |
+| `smart_organizer.py` | **AI-Enhanced** organizer — adds cognitive modes, content analysis, OCR, tagging |
 
 Both share the same core logic. `smart_organizer.py` is a strict superset of
 `organize_v4.py` — every `organize_v4` flag works identically.
@@ -52,7 +52,7 @@ Both share the same core logic. `smart_organizer.py` is a strict superset of
 
 ## Quick Start
 
-### AI-Enhanced organiser (`smart_organizer.py`)
+### AI-Enhanced organizer (`smart_organizer.py`)
 
 #### GUI
 
@@ -61,7 +61,7 @@ python smart_organizer.py
 ```
 
 A window opens with two tabs:
-1. **📁 Organisation** — recursion mode, date grouping, duplicate handling, large-file threshold
+1. **📁 Organization** — recursion mode, date grouping, duplicate handling, large-file threshold
 2. **🤖 AI / Cognitive** — select cognitive mode, enable OCR, sub-categorise documents, save tags
 
 Steps:
@@ -77,7 +77,7 @@ Steps:
 # Preview everything (no files moved)
 python smart_organizer.py --cli --dry-run -v
 
-# Organise using AI content analysis (ignores extension if content differs)
+# Organize using AI content analysis (ignores extension if content differs)
 python smart_organizer.py --cli --cognitive content
 
 # Fully adaptive: fuses extension + content with confidence scoring
@@ -106,13 +106,13 @@ python smart_organizer.py --cli --save-plan my_plan.json
                       content    — magic-byte + MIME analysis
                       adaptive   — multi-sector confidence fusion (recommended)
 --ocr               Enable OCR for image files (requires pytesseract + Pillow)
---sub-categorize    Organise documents into sub-folders (Invoices, Contracts, …)
+--sub-categorize    Organize documents into sub-folders (Invoices, Contracts, …)
 --tag-files         Write organize_tags.json with AI-derived tags for each file
 ```
 
 ---
 
-### Classic organiser (`organize_v4.py`)
+### Classic organizer (`organize_v4.py`)
 
 #### GUI (default)
 
@@ -239,7 +239,7 @@ After installation:
 ## Undo
 
 Every real run (GUI or CLI) automatically writes an undo log to
-`ORGANIZE_UNDO_LOGS/undo_log_YYYYMMDD_HHMMSS.json` inside the organised folder.
+`ORGANIZE_UNDO_LOGS/undo_log_YYYYMMDD_HHMMSS.json` inside the organized folder.
 
 ```bash
 # Restore the most recent run (smart_organizer.py)
@@ -280,7 +280,7 @@ pip install pytesseract Pillow    # OCR for scanned images
 
 | File | Purpose |
 |------|---------|
-| `smart_organizer.py` | **AI-Enhanced** organiser — cognitive modes, content analysis, OCR, tagging (GUI + CLI) |
-| `organize_v4.py` | Classic extension-based organiser — pure stdlib, zero overhead (GUI + CLI) |
+| `smart_organizer.py` | **AI-Enhanced** organizer — cognitive modes, content analysis, OCR, tagging (GUI + CLI) |
+| `organize_v4.py` | Classic extension-based organizer — pure stdlib, zero overhead (GUI + CLI) |
 | `setup_integration.py` | One-time file manager integration installer |
 | `tests/test_smart_organizer.py` | Unit and integration tests for `smart_organizer.py` |
