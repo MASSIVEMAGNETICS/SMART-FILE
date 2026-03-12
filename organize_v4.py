@@ -118,6 +118,7 @@ JUNK_FILES = frozenset({
 
 UNDO_DIR_NAME = "ORGANIZE_UNDO_LOGS"
 PLAN_FILENAME = "organize_plan.json"
+DUPLICATES_DIR_NAME = "Duplicates"
 
 
 # ─── Core helpers ─────────────────────────────────────────────────────────────
@@ -191,7 +192,7 @@ def should_skip(path: Path, include_hidden: bool, script_name: str) -> bool:
         return True
     if path.name in JUNK_FILES:
         return True
-    if not include_hidden and path.name.startswith("."):
+    if not include_hidden and any(part.startswith(".") for part in path.parts):
         return True
     return False
 
@@ -206,14 +207,26 @@ def collect_files(
     iterator: Iterator[Path] = root.iterdir() if mode == "none" else root.rglob("*")
     result = []
     for p in iterator:
-        if p.is_file() and not should_skip(p, include_hidden, script_name):
-            # Skip files already inside our undo-log or plan dirs
-            try:
-                p.relative_to(root / UNDO_DIR_NAME)
-                continue
-            except ValueError:
-                pass
-            result.append(p)
+        if not p.is_file():
+            continue
+
+        rel = p.relative_to(root)
+
+        # Always ignore our own artifacts
+        if DUPLICATES_DIR_NAME in rel.parts:
+            continue
+        if rel.name == PLAN_FILENAME:
+            continue
+        try:
+            p.relative_to(root / UNDO_DIR_NAME)
+            continue
+        except ValueError:
+            pass
+
+        if should_skip(p, include_hidden, script_name):
+            continue
+
+        result.append(p)
     return result
 
 
